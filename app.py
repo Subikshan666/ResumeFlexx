@@ -19,7 +19,7 @@ from utils.analyzer import (
 )
 
 app = Flask(__name__)
-app.secret_key = "secret_key_for_session"
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev_secret_key_change_me")
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB limit
 
@@ -166,4 +166,5 @@ def analyze():
         return redirect(url_for('analyze_page'))
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
