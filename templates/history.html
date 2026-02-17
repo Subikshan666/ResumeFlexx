@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block breadcrumb %}
+<span class="breadcrumb-item active">History</span>
+{% endblock %}
+
+{% block content %}
+<div class="welcome-section">
+    <h1>Scan <span class="highlight">History</span></h1>
+    <p>Access your past resume alignment reports and archived data.</p>
+</div>
+
+<div class="history-container">
+    {% for item in history %}
+    <div class="history-item">
+        <div class="item-info">
+            <h4 class="item-title">{{ item.filename }}</h4>
+            <div class="item-meta">PROCESSED: {{ item.timestamp }}</div>
+        </div>
+
+        <div class="item-metric">
+            <span class="metric-label">ALIGNMENT</span>
+            <span class="metric-value">{{ item.score|int }}%</span>
+        </div>
+
+        <div class="item-metric">
+            <span class="metric-label">ATS MATCH</span>
+            <span class="metric-value rank-alt">{{ item.ats_score|int }}%</span>
+        </div>
+
+        <div class="item-skills">
+            <div class="skill-stack">
+                {% for skill in item.missing_skills[:2] %}
+                <span class="pill warning">{{ skill }}</span>
+                {% endfor %}
+                {% if item.missing_skills|length > 2 %}
+                <span class="skill-more">+{{ item.missing_skills|length - 2 }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="item-actions">
+            <a href="{{ url_for('view_analysis', item_id=item.id) }}" class="icon-btn view" title="View Report">
+                <i class="fa-solid fa-file-lines"></i>
+            </a>
+            <a href="{{ url_for('delete_item', item_id=item.id) }}" class="icon-btn delete" title="Delete"
+                onclick="return confirm('Permanently delete this analysis record?')">
+                <i class="fa-solid fa-trash-can"></i>
+            </a>
+        </div>
+    </div>
+    {% else %}
+    <div class="card empty-state">
+        <div class="empty-icon">
+            <i class="fa-solid fa-folder-open"></i>
+        </div>
+        <h3>No History Yet</h3>
+        <p>You haven't analyzed any resumes yet. Start your first scan to see results here.</p>
+        <a href="{{ url_for('analyze_page') }}" class="start-btn">START ANALYSIS</a>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+    .history-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .history-item {
+        background: var(--card-bg);
+        backdrop-filter: blur(25px);
+        padding: 28px;
+        border-radius: 28px;
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1.5fr 1fr;
+        align-items: center;
+        border: 1px solid var(--border-color);
+        transition: var(--transition-normal);
+        color: var(--text-primary);
+    }
+
+    .history-item:hover {
+        transform: translateY(-4px);
+        background: #fff;
+        border-color: rgba(0, 91, 234, 0.15);
+        box-shadow: var(--shadow-hover);
+    }
+
+    .item-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 6px;
+        color: var(--text-primary);
+    }
+
+    .item-meta {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-secondary);
+    }
+
+    .metric-label {
+        display: block;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: var(--text-secondary);
+        letter-spacing: 0.15em;
+        margin-bottom: 4px;
+    }
+
+    .metric-value {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--primary-purple);
+    }
+
+    .metric-value.rank-alt {
+        color: #ac46ff;
+    }
+
+    .skill-stack {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .skill-more {
+        font-size: 11px;
+        color: var(--text-secondary);
+        font-weight: 700;
+        background: rgba(0, 0, 0, 0.05);
+        padding: 4px 8px;
+        border-radius: 8px;
+    }
+
+    .item-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+    }
+
+    .icon-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        background: rgba(0, 0, 0, 0.03);
+        color: var(--text-secondary);
+        transition: var(--transition-normal);
+        border: 1px solid transparent;
+    }
+
+    .icon-btn i {
+        font-size: 18px;
+    }
+
+    .icon-btn:hover {
+        background: rgba(0, 0, 0, 0.06);
+        transform: scale(1.1) rotate(5deg);
+        color: var(--text-primary);
+    }
+
+    .icon-btn.view:hover {
+        color: var(--primary-purple);
+        border-color: rgba(0, 91, 234, 0.15);
+        box-shadow: 0 0 15px rgba(0, 91, 234, 0.05);
+    }
+
+    .icon-btn.delete:hover {
+        color: var(--danger-color);
+        border-color: rgba(239, 68, 68, 0.15);
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.05);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 100px 40px;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+    }
+
+    .empty-icon {
+        font-size: 64px;
+        color: rgba(0, 0, 0, 0.05);
+        margin-bottom: 32px;
+    }
+
+    .empty-state h3 {
+        font-size: 24px;
+        font-weight: 800;
+        margin-bottom: 16px;
+        color: var(--text-primary);
+        letter-spacing: 0.05em;
+    }
+
+    .empty-state p {
+        color: var(--text-secondary);
+        margin-bottom: 40px;
+        font-size: 16px;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ResumeAI - Smart Resume Analysis{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;700&family=Playfair+Display:wght@400;700&family=Merriweather:wght@300;400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%2390A17D'/%3E%3Cpath d='M12 10C12 8.89543 12.8954 8 14 8H23L28 13V28C28 29.1046 27.1046 30 26 30H14C12.8954 30 12 29.1046 12 28V10Z' fill='white'/%3E%3Cpath d='M15 17H25M15 21H25' stroke='%2390A17D' stroke-width='2' stroke-linecap='round'/%3E%3Ccircle cx='30' cy='10' r='5' fill='%2390A17D' stroke='white' stroke-width='2'/%3E%3Cpath d='M30 8V12M28 10H32' stroke='white' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-wrapper">
+                    <div class="logo-icon">
+                        <svg width="42" height="42" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="40" height="40" rx="12" fill="rgba(255,255,255,0.1)" />
+                            <path
+                                d="M12 10C12 8.89543 12.8954 8 14 8H23L28 13V28C28 29.1046 27.1046 30 26 30H14C12.8954 30 12 29.1046 12 28V10Z"
+                                fill="white" />
+                            <path d="M22 8V14H28L22 8Z" fill="var(--secondary-color)" />
+                            <path d="M15 17H25M15 21H25M15 25H20" stroke="var(--primary-color)" stroke-width="2"
+                                stroke-linecap="round" />
+                            <circle cx="30" cy="10" r="5" fill="var(--primary-color)" stroke="var(--white)"
+                                stroke-width="2" />
+                            <path d="M30 8V12M28 10H32" stroke="white" stroke-width="1.2" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <div class="logo-text">
+                        <span class="logo-main">ResumeAI</span>
+                        <span class="logo-sub">Smart Analysis</span>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('dashboard') }}"
+                    class="nav-item {% if request.path == url_for('dashboard') %}active{% endif %}">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{{ url_for('analyze_page') }}"
+                    class="nav-item {% if request.path == url_for('analyze_page') %}active{% endif %}">
+                    <i class="fa-solid fa-magnifying-glass-chart"></i>
+                    <span>Analyze</span>
+                </a>
+
+                <a href="{{ url_for('history') }}"
+                    class="nav-item {% if request.path == url_for('history') %}active{% endif %}">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>History</span>
+                </a>
+                <a href="{{ url_for('settings') }}"
+                    class="nav-item {% if request.path == url_for('settings') %}active{% endif %}">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <div class="header-breadcrumb">
+                        {% block breadcrumb %}{% endblock %}
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <a href="{{ url_for('create_resume') }}" class="create-resume-btn" style="text-decoration: none;">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Create Resume</span>
+                    </a>
+                    <div class="job-offers-container">
+                        <button class="job-offers-btn" id="jobOffersBtn">
+                            <i class="fa-solid fa-lightbulb"></i>
+                            <span>Sample JOB Description</span>
+                        </button>
+                        <div class="job-offers-dropdown" id="jobOffersDropdown">
+                            <div class="dropdown-header">SAMPLE JOB LIBRARIES</div>
+                            <div class="job-example" onclick="copyJD('software-engineer')">
+                                <div class="job-title">Software Engineer</div>
+                                <div class="job-desc">React, Node.js, Python, AWS, 3+ years experience...</div>
+                            </div>
+                            <div class="job-example" onclick="copyJD('data-scientist')">
+                                <div class="job-title">Data Scientist</div>
+                                <div class="job-desc">Machine Learning, SQL, R, Statistics, Data Viz...</div>
+                            </div>
+                            <div class="job-example" onclick="copyJD('ui-ux-designer')">
+                                <div class="job-title">UI/UX Designer</div>
+                                <div class="job-desc">Figma, Adobe XD, User Research, Prototyping...</div>
+                            </div>
+                            <div class="job-example" onclick="copyJD('marketing-manager')">
+                                <div class="job-title">Marketing Manager</div>
+                                <div class="job-desc">SEO, SEM, Content Strategy, Brand Growth...</div>
+                            </div>
+                            <div class="job-example" onclick="copyJD('qa-engineer')">
+                                <div class="job-title">QA Engineer</div>
+                                <div class="job-desc">Selenium, Cypress, manual/auto testing, Jira...</div>
+                            </div>
+                            <div class="job-example" onclick="copyJD('data-analyst')">
+                                <div class="job-title">Data Analyst</div>
+                                <div class="job-desc">Excel, SQL, Tableau, Power BI, Statistics...</div>
+                            </div>
+                            <div class="job-example" onclick="copyJD('product-manager')">
+                                <div class="job-title">Product Manager</div>
+                                <div class="job-desc">Agile, Roadmap, User Stories, GTM Strategy...</div>
+                            </div>
+                            <div class="job-example" onclick="copyJD('cyber-security')">
+                                <div class="job-title">Cyber Security Analyst</div>
+                                <div class="job-desc">Network Security, Pentesting, SIEM, CISSP...</div>
+                            </div>
+                            <div class="job-example" onclick="copyJD('hr-manager')">
+                                <div class="job-title">HR Manager</div>
+                                <div class="job-desc">Talent Acquisition, Compliance, Employee Relations...</div>
+                            </div>
+                            <div class="job-example" onclick="copyJD('backend-developer')">
+                                <div class="job-title">Backend Developer</div>
+                                <div class="job-desc">Python, Go, Java, microservices, Database architecture...</div>
+                            </div>
+                            <div class="job-example" onclick="copyJD('frontend-developer')">
+                                <div class="job-title">Frontend Developer</div>
+                                <div class="job-desc">React, Vue, TypeScript, CSS, Web Performance...</div>
+                            </div>
+                            <div class="job-example" onclick="copyJD('devops-engineer')">
+                                <div class="job-title">DevOps Engineer</div>
+                                <div class="job-desc">Docker, Kubernetes, CI/CD, Terraform, Cloud Security...</div>
+                            </div>
+                            <div class="job-example" onclick="copyJD('mobile-developer')">
+                                <div class="job-title">Mobile App Developer</div>
+                                <div class="job-desc">Swift, Kotlin, Flutter, React Native, Mobile UX...</div>
+                            </div>
+                            <div class="job-example" onclick="copyJD('financial-analyst')">
+                                <div class="job-title">Financial Analyst</div>
+                                <div class="job-desc">Financial Modeling, Excel, SAP, Data Analysis, Forecasting...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% endwith %}
+
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+    {% block extra_js %}
+    <script>
+        const btn = document.getElementById('jobOffersBtn');
+        const dropdown = document.getElementById('jobOffersDropdown');
+
+        if (btn && dropdown) {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropdown.classList.toggle('active');
+            });
+
+            document.addEventListener('click', () => {
+                dropdown.classList.remove('active');
+            });
+
+            dropdown.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        }
+
+        const jds = {
+            'software-engineer': "SOFTWARE ENGINEER\n\nExperience: 3+ years of full-stack development.\nSkills: React.js, Node.js, Python, SQL, REST APIs, Git.\nCloud: Familiarity with AWS or Azure.\nEducation: CS degree or equivalent.\nAbility to work in agile teams and lead small features.",
+            'data-scientist': "DATA SCIENTIST\n\nExperience: 2+ years in data analytics/ML.\nSkills: Python (Pandas, Scikit-learn), SQL, Jupyter, Plotly.\nMath: Strong statistics and probability background.\nNLP: Knowledge of LLMs and vector databases is a plus.\nCreative problem solver with data-driven mindset.",
+            'ui-ux-designer': "UI/UX DESIGNER\n\nExperience: 2+ years in digital product design.\nTools: Figma, Adobe Creative Suite, Sketch.\nSkills: Wireframing, Prototyping, User Research, Design Systems.\nPortfolio: Strong visual design portfolio required.\nFocus on accessibility and user-centered design principles.",
+            'marketing-manager': "MARKETING MANAGER\n\nExperience: 5+ years in digital marketing.\nSkills: SEO, SEM, Paid Social, Email Marketing, Content Strategy.\nTools: Google Analytics, HubSpot, Mailchimp.\nLeadership: Experience managing budgets and small teams.\nAnalytical: Data-driven decision making and reporting.",
+            'qa-engineer': "QA ENGINEER\n\nExperience: 3+ years in software testing.\nAutomation: Selenium, Cypress, or Appium.\nTools: Jira, TestRail, Postman.\nSkills: Manual testing, Regression, Unit testing, Performance testing.\nDeep understanding of SDLC and bug lifecycle.",
+            'data-analyst': "DATA ANALYST\n\nExperience: 1-3 years in business intelligence.\nSkills: Excel (Advanced), SQL, Tableau/Power BI, Python basics.\nMath: Data cleaning, exploratory analysis, reporting.\nCommunication: Translating data into actionable business insights.\nAttention to detail and accuracy.",
+            'product-manager': "PRODUCT MANAGER\n\nExperience: 4+ years in SaaS product management.\nSkills: Strategic roadmap planning, User stories, GTM strategy.\nTools: Jira, Confluence, Mixpanel.\nCollaboration: Engineering, Design, and Marketing.\nExcellent communication and stakeholders management.",
+            'cyber-security': "CYBER SECURITY ANALYST\n\nExperience: 3+ years in information security.\nSkills: Network Security, Incident Response, Pentesting, Firewalls.\nTools: Wireshark, Metasploit, SIEM (Splunk/ELK).\nCertifications: CISSP, CEH, or CompTIA Security+.\nUnderstanding of NIST and ISO frameworks.",
+            'hr-manager': "HR MANAGER\n\nExperience: 5+ years in Human Resources.\nSkills: Strategic HR Planning, Talent Acquisition, Compliance, Employee Relations.\nTools: Workday, BambooHR, LinkedIn Recruiter.\nLeadership: Experience leading HR teams and policy development.\nStrong communication and conflict resolution skills.",
+            'backend-developer': "BACKEND DEVELOPER\n\nExperience: 4+ years in backend system design.\nLanguages: Python (FastAPI/Django), Go, or Java (Spring Boot).\nDatabases: PostgreSQL, Redis, MongoDB.\nArchitectures: Microservices, Event-driven, REST/gRPC.\nTools: Docker, Kubernetes, Git, CI/CD pipelines.\nPerformance: SQL optimization, caching strategies, system scalability.",
+            'frontend-developer': "FRONTEND DEVELOPER\n\nExperience: 3+ years in modern web development.\nFrameworks: React.js, Vue.js, or Angular.\nLanguages: TypeScript, JavaScript (ES6+), CSS3 (Tailwind/Sass).\nTools: Webpack/Vite, Jest/Cypress, Redux/Zustand.\nSkills: Responsive Design, Web Accessibility (a11y), Performance Tuning.\nDesign: Collaboration with Figma and UI/UX designers.",
+            'devops-engineer': "DEVOPS ENGINEER\n\nExperience: 3+ years in infrastructure automation.\nCloud: AWS (EC2, S3, RDS), Azure, or GCP.\nTools: Terraform, Ansible, Jenkins, GitHub Actions.\nContainerization: Kubernetes, Docker, Helm.\nMonitoring: Prometheus, Grafana, ELK Stack.\nSecurity: Cloud security best practices, IAM, VPC networking.",
+            'mobile-developer': "MOBILE APP DEVELOPER\n\nExperience: 3+ years in iOS or Android development.\nTech: Swift/SwiftUI, Kotlin/Jetpack Compose, or Flutter/React Native.\nIntegration: REST APIs, Firebase, GraphQL.\nPublishing: Experience with App Store and Play Store releases.\nUX: Deep understanding of mobile UI patterns and animations.\nDebugging: Crashlytics, Instruments, performance profiling.",
+            'financial-analyst': "FINANCIAL ANALYST\n\nExperience: 2-4 years in corporate finance.\nSkills: Financial Modeling, P&L Analysis, Budgeting, Forecasting.\nTools: Advanced Excel (VBA/PowerQuery), SAP, Oracle, Tableau.\nMath: ROI, NPV, IRR analysis, statistical forecasting.\nCommunication: Preparing reports for senior management and stakeholders.\nDetail-oriented: Ensuring data accuracy and compliance."
+        };
+
+        function copyJD(role) {
+            const text = jds[role];
+            const textarea = document.querySelector('textarea[name="job_description"]');
+
+            if (textarea) {
+                textarea.value = text;
+                // Scroll to textarea for better UX
+                textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Optional: visual feedback
+                textarea.parentElement.style.borderColor = 'var(--primary-color)';
+            } else {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('Sample description copied to clipboard! Navigating to Analyzer...');
+                    window.location.href = "{{ url_for('analyze_page') }}";
+                });
+            }
+        }
+    </script>
+    {% endblock %}
+</body>
+
+</html>

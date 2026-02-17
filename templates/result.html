@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}Analysis Report - ResumeAI{% endblock %}
+
+{% block breadcrumb %}
+<a href="{{ url_for('analyze_page') }}" class="breadcrumb-item">Analyze</a>
+<i class="fa-solid fa-chevron-right separator"></i>
+<span class="breadcrumb-item active">Analysis Report</span>
+{% endblock %}
+
+{% block content %}
+<div class="result-header">
+    <div class="welcome-section">
+        <h1>Analysis <span class="highlight">Results</span></h1>
+        <p>Target File: <strong style="color: var(--primary-color);">{{ filename }}</strong></p>
+    </div>
+    <div class="header-actions-group">
+        <a href="{{ url_for('analyze_page') }}" class="action-btn secondary">
+            <i class="fa-solid fa-plus"></i> New Scan
+        </a>
+        <button class="action-btn" onclick="window.print()">
+            <i class="fa-solid fa-download"></i> Download Report
+        </button>
+    </div>
+</div>
+
+<div class="results-grid-container">
+    <div class="metrics-row">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fa-solid fa-bullseye"></i>
+            </div>
+            <div class="stat-info">
+                <span class="label">Alignment Score</span>
+                <span class="value">{{ score|int }}%</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fa-solid fa-check-to-slot"></i>
+            </div>
+            <div class="stat-info">
+                <span class="label">ATS Readiness</span>
+                <span class="value">{{ ats_score|int }}%</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fa-solid fa-heart-pulse"></i>
+            </div>
+            <div class="stat-info">
+                <span class="label">Health Score</span>
+                <span class="value">{{ health_score|int }}%</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fa-solid fa-tags"></i>
+            </div>
+            <div class="stat-info">
+                <span class="label">Keyword Coverage</span>
+                <span class="value">{{ keyword_coverage.coverage }}%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Score Breakdown & Stats -->
+    <div class="details-grid secondary-grid">
+        <div class="card details-section">
+            <div class="section-title">
+                <i class="fa-solid fa-chart-bar" style="color: var(--primary-color);"></i>
+                <h3 style="color: var(--dark-text); font-weight: 800; text-transform: uppercase;">Missing Skills Impact
+                </h3>
+            </div>
+            <div class="breakdown-list">
+                {% for item in score_breakdown %}
+                <div class="breakdown-item">
+                    <div class="breakdown-info">
+                        <span>{{ item.skill }}</span>
+                        <strong>+{{ item.impact }}%</strong>
+                    </div>
+                    <div class="roadmap-bar">
+                        <div class="roadmap-fill" style="width: {{ item.impact * 5 }}%;"></div>
+                    </div>
+                </div>
+                {% else %}
+                <p class="roadmap-tip">No missing skills detected! Your technical stack is perfectly aligned.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card details-section">
+            <div class="section-title">
+                <i class="fa-solid fa-bolt" style="color: var(--primary-color);"></i>
+                <h3 style="color: var(--dark-text); font-weight: 800; text-transform: uppercase;">Resume Vitality</h3>
+            </div>
+            <div class="stats-mini-grid">
+                <div class="stat-mini-card">
+                    <span class="stat-label">Word Count</span>
+                    <span class="stat-value">{{ resume_stats.word_count }}</span>
+                </div>
+                <div class="stat-mini-card">
+                    <span class="stat-label">Power Words</span>
+                    <span class="stat-value">{{ power_word_count }}</span>
+                </div>
+                <div class="stat-mini-card">
+                    <span class="stat-label">Complexity</span>
+                    <span class="stat-value">{{ resume_stats.avg_word_length }}</span>
+                </div>
+                <div class="stat-mini-card">
+                    <span class="stat-label">Total Match</span>
+                    <span class="stat-value">{{ keyword_coverage.matched|length }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details: Keywords -->
+    <div class="details-grid">
+        <div class="card details-section">
+            <div class="section-title">
+                <i class="fa-solid fa-circle-check" style="color: var(--primary-color);"></i>
+                <h3 style="color: var(--dark-text); font-weight: 800; text-transform: uppercase;">Matched Keywords</h3>
+            </div>
+            <div class="pill-list">
+                {% for keyword in keyword_coverage.matched %}
+                <span class="pill-futuristic matched">
+                    {{ keyword }}
+                </span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card details-section">
+            <div class="section-title">
+                <i class="fa-solid fa-circle-xmark" style="color: var(--muted-text);"></i>
+                <h3 style="color: var(--dark-text); font-weight: 800; text-transform: uppercase;">Missing Keywords</h3>
+            </div>
+            <div class="pill-list">
+                {% for keyword in keyword_coverage.missing %}
+                <span class="pill-futuristic missing">
+                    {{ keyword }}
+                </span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Actionable Insights -->
+    <div class="details-grid actionable-grid">
+        <div class="card details-section actionable-section">
+            <div class="section-title">
+                <i class="fa-solid fa-list-check" style="color: var(--primary-color);"></i>
+                <h3 style="color: var(--dark-text); font-weight: 800; text-transform: uppercase;">Action Checklist</h3>
+            </div>
+            <div class="roadmap-list">
+                {% for action in action_checklist %}
+                <div class="roadmap-item action-item">
+                    <i class="fa-solid fa-circle-dot action-icon"></i>
+                    <p class="roadmap-tip">{{ action }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card details-section recommendations-section">
+            <div class="section-title">
+                <i class="fa-solid fa-graduation-cap" style="color: var(--primary-color);"></i>
+                <h3 style="color: var(--dark-text); font-weight: 800; text-transform: uppercase;">Learning Paths
+                </h3>
+            </div>
+            <div class="recommendations-list">
+                {% for rec in recommendations %}
+                <div class="rec-card">
+                    <div class="rec-title">{{ rec.name }}</div>
+                    <div class="rec-tips"><strong>Pro Tip:</strong> {{ rec.tips }}</div>
+                    <div class="rec-interview"><strong>Interview Q:</strong> {{ rec.interview }}</div>
+                    <div class="rec-resources">
+                        {% for res in rec.resources %}
+                        <span class="resource-tag">{{ res }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- New: Section Coverage -->
+    <div class="card section-coverage-card">
+        <div class="section-title">
+            <i class="fa-solid fa-layer-group" style="color: var(--primary-color);"></i>
+            <h3 style="color: var(--dark-text); font-weight: 800; text-transform: uppercase;">Section Coverage</h3>
+        </div>
+        <div class="coverage-pills">
+            {% for section, present in section_coverage.items() %}
+            <div class="coverage-pill {% if present %}present{% else %}missing{% endif %}">
+                <i class="fa-solid {% if present %}fa-check{% else %}fa-xmark{% endif %}"></i>
+                <span>{{ section }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

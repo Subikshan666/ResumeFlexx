@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - ResumeAI{% endblock %}
+
+{% block breadcrumb %}
+<span class="breadcrumb-item active">Dashboard Overview</span>
+{% endblock %}
+
+{% block content %}
+<div class="welcome-section">
+    <h1>Smart <span class="highlight">Insights.</span></h1>
+    <p>Empower your career journey with AI-driven resume analysis and real-time job alignment data.</p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fa-solid fa-file-invoice"></i>
+        </div>
+        <div class="stat-info">
+            <span class="label">Total Scans</span>
+            <span class="value">{{ stats.total_resumes }}</span>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fa-solid fa-chart-simple"></i>
+        </div>
+        <div class="stat-info">
+            <span class="label">Avg Score</span>
+            <span class="value">{{ stats.avg_score }}%</span>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fa-solid fa-trophy"></i>
+        </div>
+        <div class="stat-info">
+            <span class="label">Best Score</span>
+            <span class="value">{{ stats.best_score }}%</span>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-sections">
+    <div class="card roadmap-card">
+        <div class="card-header-row">
+            <h3 class="card-title">Professional Roadmap</h3>
+            <span class="card-link">Live Insights</span>
+        </div>
+        <div class="roadmap-list">
+            <div class="roadmap-item">
+                <div class="roadmap-info">
+                    <span class="roadmap-label"><i class="fa-solid fa-code"></i> Technical Synergy</span>
+                    <span class="roadmap-percent">84%</span>
+                </div>
+                <div class="roadmap-bar">
+                    <div class="roadmap-fill" style="width: 84%;"></div>
+                </div>
+                <p class="roadmap-tip">Your technical stack aligns perfectly with Senior-level requirements.</p>
+            </div>
+
+            <div class="roadmap-item">
+                <div class="roadmap-info">
+                    <span class="roadmap-label"><i class="fa-solid fa-users-gear"></i> Leadership Presence</span>
+                    <span class="roadmap-percent">62%</span>
+                </div>
+                <div class="roadmap-bar">
+                    <div class="roadmap-fill" style="width: 62%;"></div>
+                </div>
+                <p class="roadmap-tip">Expand your 'Mentorship' experience to bridge the management gap.</p>
+            </div>
+
+            <div class="roadmap-item">
+                <div class="roadmap-info">
+                    <span class="roadmap-label"><i class="fa-solid fa-brain"></i> Strategic Alignment</span>
+                    <span class="roadmap-percent">91%</span>
+                </div>
+                <div class="roadmap-bar">
+                    <div class="roadmap-fill" style="width: 91%;"></div>
+                </div>
+                <p class="roadmap-tip">Exceptional goal-oriented wording detected in recent iterations.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card job-hubs-card">
+        <div class="card-header-row">
+            <h3 class="card-title">Job Search Signals</h3>
+        </div>
+        <p style="font-size: 13px; color: var(--muted-text); margin-bottom: 24px;">Find your next opportunity on these
+            major job boards:</p>
+        <div class="hubs-grid">
+            <a href="https://www.linkedin.com/jobs" target="_blank" class="hub-link">
+                <i class="fa-brands fa-linkedin"></i>
+                <span>LINKEDIN</span>
+            </a>
+            <a href="https://www.indeed.com" target="_blank" class="hub-link">
+                <i class="fa-solid fa-i"></i>
+                <span>INDEED</span>
+            </a>
+            <a href="https://www.glassdoor.com" target="_blank" class="hub-link">
+                <i class="fa-solid fa-briefcase"></i>
+                <span>GLASSDOOR</span>
+            </a>
+            <a href="https://www.monster.com" target="_blank" class="hub-link">
+                <i class="fa-solid fa-m"></i>
+                <span>MONSTER</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

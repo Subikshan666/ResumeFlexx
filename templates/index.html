@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Analyze Resume - ResumeAI{% endblock %}
+
+{% block breadcrumb %}
+<span class="breadcrumb-item active">Analyze</span>
+{% endblock %}
+
+{% block content %}
+<div class="welcome-section">
+  <h1>Resume <span class="highlight">Alignment Scan</span></h1>
+  <p>Our intelligent AI cross-references resume data against your target job parameters.</p>
+</div>
+
+<div class="card analyze-card">
+  <form action="/analyze" method="post" enctype="multipart/form-data">
+    <div class="form-grid">
+      <div class="form-group upload-section">
+        <label for="resume" class="field-label">
+          RESUME DATA INPUT
+        </label>
+        <div class="upload-area" id="uploadZone">
+          <input type="file" name="resume" id="resume" accept=".pdf,.docx" required>
+          <div class="upload-placeholder">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <span class="placeholder-main">Upload Resume</span>
+            <p class="placeholder-sub">Compatible: PDF, DOCX (Max 16MB)</p>
+          </div>
+          <div class="file-info" id="fileInfo" style="display: none;">
+            <i class="fa-solid fa-file-circle-check"
+              style="font-size: 32px; color: var(--primary-color); margin-bottom: 12px;"></i>
+            <span id="fileName" style="font-weight: 700; color: var(--dark-text);"></span>
+            <p style="font-size: 11px; color: var(--primary-color); margin-top: 4px; font-weight: 700;">SYSTEM READY</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group text-section">
+        <label for="job_description" class="field-label">
+          JOB DESCRIPTION
+        </label>
+        <div class="textarea-container">
+          <textarea name="job_description" id="job_description" rows="12"
+            placeholder="Paste the target job description here..." required></textarea>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" class="analyze-btn">
+      RUN ALIGNMENT ANALYSIS
+    </button>
+  </form>
+</div>
+
+<script>
+  document.getElementById('resume').addEventListener('change', function (e) {
+    const fileName = e.target.files[0]?.name;
+    const placeholder = document.querySelector('.upload-placeholder');
+    const info = document.getElementById('fileInfo');
+    const nameSpan = document.getElementById('fileName');
+    const zone = document.getElementById('uploadZone');
+
+    if (fileName) {
+      placeholder.style.display = 'none';
+      info.style.display = 'flex';
+      nameSpan.textContent = fileName;
+      zone.style.borderColor = 'var(--primary-color)';
+      zone.style.background = 'var(--secondary-color)';
+    } else {
+      placeholder.style.display = 'flex';
+      info.style.display = 'none';
+      zone.style.borderColor = 'var(--primary-color)';
+      zone.style.background = 'var(--white)';
+    }
+  });
+</script>
+{% endblock %}
