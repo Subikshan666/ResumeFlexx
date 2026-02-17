@@ -20,6 +20,7 @@
 
 <body>
     <div class="app-container">
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
@@ -77,6 +78,9 @@
         <main class="main-content">
             <header class="top-header">
                 <div class="header-left">
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
                     <div class="header-breadcrumb">
                         {% block breadcrumb %}{% endblock %}
                     </div>
@@ -174,6 +178,21 @@
     <script>
         const btn = document.getElementById('jobOffersBtn');
         const dropdown = document.getElementById('jobOffersDropdown');
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+
+        if (menuToggle && sidebar && overlay) {
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+            });
+
+            overlay.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+        }
 
         if (btn && dropdown) {
             btn.addEventListener('click', (e) => {
