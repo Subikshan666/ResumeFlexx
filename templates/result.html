@@ -1,208 +1,456 @@
 {% extends "base.html" %}
 
-{% block title %}Analysis Report - ResumeAI{% endblock %}
+{% block title %}Analysis Report - ResumeFlexx{% endblock %}
 
-{% block breadcrumb %}
-<a href="{{ url_for('analyze_page') }}" class="breadcrumb-item">Analyze</a>
-<i class="fa-solid fa-chevron-right separator"></i>
-<span class="breadcrumb-item active">Analysis Report</span>
+{% block extra_css %}
+<!-- External Dependencies -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap"
+    rel="stylesheet">
+
+<style>
+    :root {
+        --primary: #2ECC71;
+        --primary-dark: #27AE60;
+        --secondary: #34495E;
+        --accent: #F1C40F;
+        --bg-body: #F8FAFC;
+        --card-bg: rgba(255, 255, 255, 0.95);
+        --glass-border: rgba(0, 0, 0, 0.05);
+        --text-main: #1E293B;
+        --text-muted: #64748B;
+        --radius-lg: 24px;
+        --radius-md: 16px;
+        --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        --shadow-strong: 0 20px 50px -12px rgba(46, 204, 113, 0.15);
+    }
+
+    body {
+        background-color: var(--bg-body);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        color: var(--text-main);
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .report-page-container {
+        padding: 40px 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* Glass Card Style */
+    .glass-card {
+        background: var(--card-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-soft);
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+
+    /* Header Styling */
+    .report-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 40px;
+        gap: 20px;
+    }
+
+    .report-title h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        margin: 0;
+        color: var(--secondary);
+    }
+
+    .report-meta {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-top: 10px;
+        color: var(--text-muted);
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    /* Action Buttons */
+    .action-group {
+        display: flex;
+        gap: 12px;
+    }
+
+    .btn-premium {
+        padding: 12px 24px;
+        border-radius: var(--radius-md);
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        border: none;
+        font-size: 0.95rem;
+        text-decoration: none;
+    }
+
+    .btn-premium-primary {
+        background: var(--primary);
+        color: white;
+    }
+
+    .btn-premium-outline {
+        background: white;
+        color: var(--secondary);
+        border: 2px solid #E2E8F0;
+    }
+
+    /* Score Grid */
+    .score-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+    }
+
+    .score-card {
+        padding: 30px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .score-circle {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin-bottom: 15px;
+        position: relative;
+    }
+
+    .score-label {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        text-transform: uppercase;
+    }
+
+    /* Main Content Layout */
+    .main-grid {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+
+    .sidebar-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    /* Section titles */
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 25px;
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: var(--secondary);
+    }
+
+    .suggestion-item {
+        padding: 20px;
+        border-radius: var(--radius-md);
+        background: #F8FAFC;
+        border-left: 4px solid var(--primary);
+        margin-bottom: 15px;
+        display: flex;
+        gap: 15px;
+    }
+
+    .tag {
+        padding: 6px 14px;
+        border-radius: 30px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin: 4px;
+    }
+
+    .tag-success {
+        background: #DCFCE7;
+        color: #166534;
+    }
+
+    .tag-warning {
+        background: #FEF9C3;
+        color: #854D0E;
+    }
+
+    .premium-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .premium-table th {
+        text-align: left;
+        padding: 12px;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        border-bottom: 2px solid #F1F5F9;
+    }
+
+    .premium-table td {
+        padding: 15px 12px;
+        border-bottom: 1px solid #F1F5F9;
+    }
+
+    /* PDF Specific Optimization - CRITICAL */
+    @media print {
+        body {
+            background: #F8FAFC !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .report-page-container {
+            padding: 0 !important;
+            width: 100% !important;
+            max-width: 1200px !important;
+        }
+
+        .no-print {
+            display: none !important;
+        }
+
+        .glass-card {
+            background: white !important;
+            box-shadow: none !important;
+            border: 1px solid #E2E8F0 !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            margin-bottom: 20px !important;
+        }
+
+        .suggestion-item {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+
+        .pdf-only {
+            display: block !important;
+        }
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="result-header">
-    <div class="welcome-section">
-        <h1>Analysis <span class="highlight">Results</span></h1>
-        <p>Target File: <strong style="color: var(--primary-color);">{{ filename }}</strong></p>
-    </div>
-    <div class="header-actions-group">
-        <a href="{{ url_for('analyze_page') }}" class="action-btn secondary">
-            <i class="fa-solid fa-plus"></i> New Scan
-        </a>
-        <button class="action-btn" onclick="window.print()">
-            <i class="fa-solid fa-download"></i> Download Report
-        </button>
-    </div>
-</div>
-
-<div class="results-grid-container">
-    <div class="metrics-row">
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="fa-solid fa-bullseye"></i>
-            </div>
-            <div class="stat-info">
-                <span class="label">Alignment Score</span>
-                <span class="value">{{ score|int }}%</span>
+<div class="report-page-container">
+    <header class="report-header no-print">
+        <div class="report-title">
+            <h1>Intelligence Report</h1>
+            <div class="report-meta">
+                <span>{{ filename }}</span>
+                <span>•</span>
+                <span>Generated Just Now</span>
             </div>
         </div>
+        <div class="action-group">
+            <a href="{{ url_for('analyze_page') }}" class="btn-premium btn-premium-outline">New Analysis</a>
+            {% if analysis_id %}
+            <a href="{{ url_for('download_report', analysis_id=analysis_id) }}" class="btn-premium btn-premium-primary">
+                Download PDF
+            </a>
+            {% endif %}
+        </div>
+    </header>
 
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="fa-solid fa-check-to-slot"></i>
-            </div>
-            <div class="stat-info">
-                <span class="label">ATS Readiness</span>
-                <span class="value">{{ ats_score|int }}%</span>
-            </div>
+    <div id="reportContent">
+        <!-- Re-drawing the Header inside reportContent for PDF -->
+        <div style="display: none; margin-bottom: 30px;" class="pdf-only">
+            <h1 style="font-size: 2.5rem; color: #34495E; margin: 0;">Intelligence Report</h1>
+            <p style="color: #64748B;">{{ filename }} • Verified Analysis</p>
         </div>
 
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="fa-solid fa-heart-pulse"></i>
-            </div>
-            <div class="stat-info">
-                <span class="label">Health Score</span>
-                <span class="value">{{ health_score|int }}%</span>
-            </div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="fa-solid fa-tags"></i>
-            </div>
-            <div class="stat-info">
-                <span class="label">Keyword Coverage</span>
-                <span class="value">{{ keyword_coverage.coverage }}%</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Score Breakdown & Stats -->
-    <div class="details-grid secondary-grid">
-        <div class="card details-section">
-            <div class="section-title">
-                <i class="fa-solid fa-chart-bar" style="color: var(--primary-color);"></i>
-                <h3 style="color: var(--dark-text); font-weight: 800; text-transform: uppercase;">Missing Skills Impact
-                </h3>
-            </div>
-            <div class="breakdown-list">
-                {% for item in score_breakdown %}
-                <div class="breakdown-item">
-                    <div class="breakdown-info">
-                        <span>{{ item.skill }}</span>
-                        <strong>+{{ item.impact }}%</strong>
-                    </div>
-                    <div class="roadmap-bar">
-                        <div class="roadmap-fill" style="width: {{ item.impact * 5 }}%;"></div>
-                    </div>
+        <div class="score-grid">
+            <div class="glass-card score-card">
+                <div class="score-circle">
+                    <svg width="100" height="100" viewBox="0 0 100 100" style="position: absolute; top:0; left:0;">
+                        <circle cx="50" cy="50" r="42" fill="white" stroke="#F1F5F9" stroke-width="8" />
+                        <circle cx="50" cy="50" r="42" fill="none" stroke="#2ECC71" stroke-width="8"
+                            stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="264"
+                            stroke-dashoffset="{{ 264 - (264 * score|default(0)|int / 100) }}" />
+                    </svg>
+                    <span
+                        style="position: relative; z-index: 1; font-weight: 800; font-size: 1.8rem; color: #1E293B;">{{
+                        score|default(0)|int }}%</span>
                 </div>
-                {% else %}
-                <p class="roadmap-tip">No missing skills detected! Your technical stack is perfectly aligned.</p>
-                {% endfor %}
+                <div class="score-label">Match Score</div>
+            </div>
+            <div class="glass-card score-card">
+                <div class="score-circle">
+                    <svg width="100" height="100" viewBox="0 0 100 100" style="position: absolute; top:0; left:0;">
+                        <circle cx="50" cy="50" r="42" fill="white" stroke="#F1F5F9" stroke-width="8" />
+                        <circle cx="50" cy="50" r="42" fill="none" stroke="#3498DB" stroke-width="8"
+                            stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="264"
+                            stroke-dashoffset="{{ 264 - (264 * ats_score|default(0)|int / 100) }}" />
+                    </svg>
+                    <span
+                        style="position: relative; z-index: 1; font-weight: 800; font-size: 1.8rem; color: #3498DB;">{{
+                        ats_score|default(0)|int }}%</span>
+                </div>
+                <div class="score-label">ATS Readiness</div>
+            </div>
+            <div class="glass-card score-card">
+                <div class="score-circle">
+                    <svg width="100" height="100" viewBox="0 0 100 100" style="position: absolute; top:0; left:0;">
+                        <circle cx="50" cy="50" r="42" fill="white" stroke="#F1F5F9" stroke-width="8" />
+                        <circle cx="50" cy="50" r="42" fill="none" stroke="#E67E22" stroke-width="8"
+                            stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="264"
+                            stroke-dashoffset="{{ 264 - (264 * health_score|default(0)|int / 100) }}" />
+                    </svg>
+                    <span
+                        style="position: relative; z-index: 1; font-weight: 800; font-size: 1.8rem; color: #E67E22;">{{
+                        health_score|default(0)|int }}%</span>
+                </div>
+                <div class="score-label">Vitality Index</div>
+            </div>
+            <div class="glass-card score-card">
+                <div class="score-circle">
+                    <svg width="100" height="100" viewBox="0 0 100 100" style="position: absolute; top:0; left:0;">
+                        <circle cx="50" cy="50" r="42" fill="white" stroke="#F1F5F9" stroke-width="8" />
+                        <circle cx="50" cy="50" r="42" fill="none" stroke="#9B59B6" stroke-width="8"
+                            stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="264"
+                            stroke-dashoffset="{{ 264 - (264 * keyword_coverage.coverage|default(0)|int / 100) if keyword_coverage else 264 }}" />
+                    </svg>
+                    <span
+                        style="position: relative; z-index: 1; font-weight: 800; font-size: 1.8rem; color: #9B59B6;">{{
+                        keyword_coverage.coverage|default(0)|int if keyword_coverage else 0 }}%</span>
+                </div>
+                <div class="score-label">Keyword Sync</div>
             </div>
         </div>
 
-        <div class="card details-section">
-            <div class="section-title">
-                <i class="fa-solid fa-bolt" style="color: var(--primary-color);"></i>
-                <h3 style="color: var(--dark-text); font-weight: 800; text-transform: uppercase;">Resume Vitality</h3>
-            </div>
-            <div class="stats-mini-grid">
-                <div class="stat-mini-card">
-                    <span class="stat-label">Word Count</span>
-                    <span class="stat-value">{{ resume_stats.word_count }}</span>
+        <div class="main-grid">
+            <div class="glass-card" style="padding: 35px; min-height: 520px; display: flex; flex-direction: column;">
+                <div class="section-title">Competency Breakdown</div>
+                <!-- Forced explicit width and min-height fixes the squished radar chart missing space in PDF -->
+                <div style="flex-grow: 1; width: 100%; min-height: 380px; position: relative;">
+                    <canvas id="radarChart"></canvas>
                 </div>
-                <div class="stat-mini-card">
-                    <span class="stat-label">Power Words</span>
-                    <span class="stat-value">{{ power_word_count }}</span>
-                </div>
-                <div class="stat-mini-card">
-                    <span class="stat-label">Complexity</span>
-                    <span class="stat-value">{{ resume_stats.avg_word_length }}</span>
-                </div>
-                <div class="stat-mini-card">
-                    <span class="stat-label">Total Match</span>
-                    <span class="stat-value">{{ keyword_coverage.matched|length }}</span>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Details: Keywords -->
-    <div class="details-grid">
-        <div class="card details-section">
-            <div class="section-title">
-                <i class="fa-solid fa-circle-check" style="color: var(--primary-color);"></i>
-                <h3 style="color: var(--dark-text); font-weight: 800; text-transform: uppercase;">Matched Keywords</h3>
-            </div>
-            <div class="pill-list">
-                {% for keyword in keyword_coverage.matched %}
-                <span class="pill-futuristic matched">
-                    {{ keyword }}
-                </span>
-                {% endfor %}
-            </div>
-        </div>
-
-        <div class="card details-section">
-            <div class="section-title">
-                <i class="fa-solid fa-circle-xmark" style="color: var(--muted-text);"></i>
-                <h3 style="color: var(--dark-text); font-weight: 800; text-transform: uppercase;">Missing Keywords</h3>
-            </div>
-            <div class="pill-list">
-                {% for keyword in keyword_coverage.missing %}
-                <span class="pill-futuristic missing">
-                    {{ keyword }}
-                </span>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-
-    <!-- Actionable Insights -->
-    <div class="details-grid actionable-grid">
-        <div class="card details-section actionable-section">
-            <div class="section-title">
-                <i class="fa-solid fa-list-check" style="color: var(--primary-color);"></i>
-                <h3 style="color: var(--dark-text); font-weight: 800; text-transform: uppercase;">Action Checklist</h3>
-            </div>
-            <div class="roadmap-list">
-                {% for action in action_checklist %}
-                <div class="roadmap-item action-item">
-                    <i class="fa-solid fa-circle-dot action-icon"></i>
-                    <p class="roadmap-tip">{{ action }}</p>
+                <div class="section-title" style="margin-top: 40px;">Strategic Insights</div>
+                {% if action_checklist %}
+                {% for action in action_checklist[:3] %}
+                <div class="suggestion-item">
+                    <div style="font-size: 0.9rem; color: #1E293B;">{{ action }}</div>
                 </div>
                 {% endfor %}
+                {% endif %}
             </div>
-        </div>
 
-        <div class="card details-section recommendations-section">
-            <div class="section-title">
-                <i class="fa-solid fa-graduation-cap" style="color: var(--primary-color);"></i>
-                <h3 style="color: var(--dark-text); font-weight: 800; text-transform: uppercase;">Learning Paths
-                </h3>
-            </div>
-            <div class="recommendations-list">
-                {% for rec in recommendations %}
-                <div class="rec-card">
-                    <div class="rec-title">{{ rec.name }}</div>
-                    <div class="rec-tips"><strong>Pro Tip:</strong> {{ rec.tips }}</div>
-                    <div class="rec-interview"><strong>Interview Q:</strong> {{ rec.interview }}</div>
-                    <div class="rec-resources">
-                        {% for res in rec.resources %}
-                        <span class="resource-tag">{{ res }}</span>
+            <div class="sidebar-grid">
+                <div class="glass-card" style="padding: 30px;">
+                    <div class="section-title">Keywords</div>
+                    <div class="tag-container">
+                        {% if keyword_coverage %}
+                        {% for kw in keyword_coverage.matched[:8] %}
+                        <span class="tag tag-success">{{ kw }}</span>
                         {% endfor %}
+                        {% for kw in keyword_coverage.missing[:5] %}
+                        <span class="tag tag-warning">{{ kw }}</span>
+                        {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
 
-    <!-- New: Section Coverage -->
-    <div class="card section-coverage-card">
-        <div class="section-title">
-            <i class="fa-solid fa-layer-group" style="color: var(--primary-color);"></i>
-            <h3 style="color: var(--dark-text); font-weight: 800; text-transform: uppercase;">Section Coverage</h3>
-        </div>
-        <div class="coverage-pills">
-            {% for section, present in section_coverage.items() %}
-            <div class="coverage-pill {% if present %}present{% else %}missing{% endif %}">
-                <i class="fa-solid {% if present %}fa-check{% else %}fa-xmark{% endif %}"></i>
-                <span>{{ section }}</span>
+                <div class="glass-card" style="padding: 30px;">
+                    <div class="section-title">Metrics</div>
+                    <div style="color: #64748B; font-size: 0.9rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span>Word Count</span><span style="font-weight: 800; color: #1E293B;">{{
+                                resume_stats.word_count if resume_stats else 0 }}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Bullet Points</span><span style="font-weight: 800; color: #1E293B;">{{
+                                resume_stats.bullet_count if resume_stats else 0 }}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            {% endfor %}
         </div>
+
+        {% if score_breakdown %}
+        <div class="glass-card" style="padding: 35px; margin-bottom: 40px;">
+            <div class="section-title">Match Optimizer</div>
+            <table class="premium-table">
+                <thead>
+                    <tr>
+                        <th>Competency</th>
+                        <th>Strategic Action</th>
+                        <th>Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in score_breakdown[:4] %}
+                    <tr>
+                        <td style="font-weight: 700;">{{ item.skill }}</td>
+                        <td style="color: #64748B;">{{ item.action }}</td>
+                        <td><span class="tag tag-success">+{{ item.impact }}%</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        new Chart(document.getElementById('radarChart'), {
+            type: 'radar',
+            data: {
+                labels: ['Match', 'ATS', 'Vitality', 'Keywords', 'Power', 'Structure'],
+                datasets: [{
+                    data: [
+                        parseInt('{{ score|default(0) }}') || 0,
+                        parseInt('{{ ats_score|default(0) }}') || 0,
+                        parseInt('{{ health_score|default(0) }}') || 0,
+                        parseInt('{{ keyword_coverage.coverage|default(0) if keyword_coverage else 0 }}') || 0,
+                        85,
+                        parseInt('{{ section_coverage.coverage|default(0) if section_coverage else 0 }}') || 0
+                    ],
+                    backgroundColor: 'rgba(46, 204, 113, 0.2)',
+                    borderColor: '#2ECC71',
+                    borderWidth: 2,
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: false,
+                scales: { r: { min: 0, max: 100, ticks: { display: false } } },
+                plugins: { legend: { display: false } }
+            }
+        });
+    });
+</script>
 {% endblock %}

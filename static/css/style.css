@@ -1414,3 +1414,100 @@ body::after {
         padding: 30px 20px;
     }
 }
+
+/* =============================================
+   PRINT / PDF EXPORT STYLES
+   Hides navigation chrome and exposes only the
+   analysis report content for clean printing.
+============================================= */
+@media print {
+
+    /* Reset page layout */
+    body {
+        overflow: visible !important;
+        background: #fff !important;
+    }
+
+    body::before,
+    body::after {
+        display: none !important;
+    }
+
+    /* Hide all chrome */
+    .sidebar,
+    .sidebar-overlay,
+    .top-header,
+    .result-header,
+    .header-actions-group,
+    .action-btn,
+    .menu-toggle,
+    .flash-messages {
+        display: none !important;
+    }
+
+    /* Make container a simple block */
+    .app-container {
+        display: block !important;
+        height: auto !important;
+    }
+
+    .main-content {
+        display: block !important;
+        overflow: visible !important;
+    }
+
+    .content-wrapper {
+        padding: 0 !important;
+        overflow: visible !important;
+    }
+
+    /* Report content fills the page */
+    .results-grid-container {
+        display: block !important;
+        gap: 0 !important;
+    }
+
+    .results-grid-container>* {
+        margin-bottom: 20px;
+        page-break-inside: avoid;
+    }
+
+    /* Ensure cards look clean without shadows */
+    .card,
+    .stat-card,
+    .roadmap-item,
+    .rec-card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+    }
+
+    /* Reset hover transforms */
+    .stat-card:hover {
+        transform: none !important;
+    }
+
+    /* Grids for print */
+    .metrics-row {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 12px !important;
+        margin-bottom: 20px;
+    }
+
+    .details-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 12px !important;
+        margin-bottom: 20px;
+    }
+
+    .secondary-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 12px !important;
+    }
+
+    a[href]:after {
+        content: none !important;
+    }
+}

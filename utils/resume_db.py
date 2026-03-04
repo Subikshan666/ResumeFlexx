@@ -24,22 +24,28 @@ def init_db():
     conn.close()
 
 def save_analysis(filename, score, ats_score, health_score, missing_skills, results):
+    """Persist an analysis run and return its new primary key ID."""
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    cursor.execute('''
+    cursor.execute(
+        '''
         INSERT INTO history (filename, timestamp, score, ats_score, health_score, missing_skills, results_json)
         VALUES (?, ?, ?, ?, ?, ?, ?)
-    ''', (
-        filename,
-        datetime.now().strftime('%d/%m/%Y'),
-        score,
-        ats_score,
-        health_score,
-        json.dumps(missing_skills),
-        json.dumps(results)
-    ))
+        ''',
+        (
+            filename,
+            datetime.now().strftime('%d/%m/%Y'),
+            score,
+            ats_score,
+            health_score,
+            json.dumps(missing_skills),
+            json.dumps(results),
+        ),
+    )
+    analysis_id = cursor.lastrowid
     conn.commit()
     conn.close()
+    return analysis_id
 
 def get_history():
     conn = sqlite3.connect(DB_PATH)
@@ -64,10 +70,14 @@ def get_analysis_by_id(analysis_id):
     row = cursor.fetchone()
     conn.close()
     
-    if row:
-        d = dict(row)
-        return json.loads(d['results_json'])
-    return None
+    if not row:
+        return None
+
+    d = dict(row)
+    results = json.loads(d['results_json'])
+    # Attach the primary key so templates can build URLs like /download-report/<id>
+    results['analysis_id'] = d['id']
+    return results
 
 def get_dashboard_stats():
     conn = sqlite3.connect(DB_PATH)

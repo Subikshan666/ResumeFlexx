@@ -12,7 +12,6 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%2390A17D'/%3E%3Cpath d='M12 10C12 8.89543 12.8954 8 14 8H23L28 13V28C28 29.1046 27.1046 30 26 30H14C12.8954 30 12 29.1046 12 28V10Z' fill='white'/%3E%3Cpath d='M15 17H25M15 21H25' stroke='%2390A17D' stroke-width='2' stroke-linecap='round'/%3E%3Ccircle cx='30' cy='10' r='5' fill='%2390A17D' stroke='white' stroke-width='2'/%3E%3Cpath d='M30 8V12M28 10H32' stroke='white' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E">
     {% block extra_css %}{% endblock %}
@@ -176,39 +175,41 @@
     </div>
     {% block extra_js %}
     <script>
-        const btn = document.getElementById('jobOffersBtn');
-        const dropdown = document.getElementById('jobOffersDropdown');
-        const menuToggle = document.getElementById('menuToggle');
-        const sidebar = document.querySelector('.sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
+        (function () {
+            const btn = document.getElementById('jobOffersBtn');
+            const dropdown = document.getElementById('jobOffersDropdown');
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
 
-        if (menuToggle && sidebar && overlay) {
-            menuToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('active');
-                overlay.classList.toggle('active');
-            });
+            if (menuToggle && sidebar && overlay) {
+                menuToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('active');
+                    overlay.classList.toggle('active');
+                });
 
-            overlay.addEventListener('click', () => {
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-            });
-        }
+                overlay.addEventListener('click', () => {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                });
+            }
 
-        if (btn && dropdown) {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                dropdown.classList.toggle('active');
-            });
+            if (btn && dropdown) {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropdown.classList.toggle('active');
+                });
 
-            document.addEventListener('click', () => {
-                dropdown.classList.remove('active');
-            });
+                document.addEventListener('click', () => {
+                    dropdown.classList.remove('active');
+                });
 
-            dropdown.addEventListener('click', (e) => {
-                e.stopPropagation();
-            });
-        }
+                dropdown.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                });
+            }
+        })();
 
         const jds = {
             'software-engineer': "SOFTWARE ENGINEER\n\nExperience: 3+ years of full-stack development.\nSkills: React.js, Node.js, Python, SQL, REST APIs, Git.\nCloud: Familiarity with AWS or Azure.\nEducation: CS degree or equivalent.\nAbility to work in agile teams and lead small features.",

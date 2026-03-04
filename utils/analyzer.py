@@ -240,13 +240,92 @@ def get_recommendations(missing_skills):
     recommendations = []
     for skill in missing_skills:
         if skill in SKILL_DB:
-            rec = SKILL_DB[skill]
+            rec = SKILL_DB[skill].copy()
             rec['name'] = skill.title() # Add display name
             recommendations.append(rec)
+        else:
+            # Fallback roadmap for unknown skills
+            recommendations.append({
+                'name': skill.title(),
+                'tips': f"Research and practice '{skill.title()}'. Add relevant projects or experience to your resume.",
+                'resources': [f"Google search: {skill.title()} tutorials", f"LinkedIn Learning: {skill.title()}", f"YouTube: {skill.title()} basics"],
+                'interview': f"Prepare to explain your understanding and practical use of '{skill.title()}'."
+            })
     return recommendations
 
 # Knowledge Base
 SKILL_DB = {
+        'software developer': {
+            'resources': ['LeetCode', 'GeeksforGeeks', 'Stack Overflow', 'Clean Code Book'],
+            'tips': 'Master algorithms, data structures, version control, and software design patterns.',
+            'interview': 'Explain OOP principles. How do you debug a production issue?',
+            'roadmap': [
+                'Day 1: Programming language basics (Python/Java/C++)',
+                'Day 2: Data structures and algorithms',
+                'Day 3: Version control (Git)',
+                'Day 4: Software design patterns',
+                'Day 5: Build a small project',
+                'Day 6: Code review and testing',
+                'Day 7: Mock interview and review'
+            ]
+        },
+        'marketing manager': {
+            'resources': ['HubSpot Academy', 'Google Digital Garage', 'Mailchimp Blog'],
+            'tips': 'Learn digital marketing, SEO, SEM, content strategy, and analytics tools.',
+            'interview': 'How do you measure campaign ROI? Explain a successful marketing strategy you led.',
+            'roadmap': [
+                'Day 1: Marketing fundamentals',
+                'Day 2: SEO and SEM basics',
+                'Day 3: Content strategy',
+                'Day 4: Email marketing',
+                'Day 5: Analytics tools (Google Analytics)',
+                'Day 6: Social media campaigns',
+                'Day 7: Review and case study prep'
+            ]
+        },
+        'financial analyst': {
+            'resources': ['Investopedia', 'Corporate Finance Institute', 'Wall Street Prep'],
+            'tips': 'Master Excel, financial modeling, data analysis, and reporting.',
+            'interview': 'Explain a DCF analysis. How do you forecast revenue?',
+            'roadmap': [
+                'Day 1: Finance basics and terminology',
+                'Day 2: Excel for finance',
+                'Day 3: Financial modeling',
+                'Day 4: Data analysis techniques',
+                'Day 5: Reporting and presentations',
+                'Day 6: Build a financial model',
+                'Day 7: Review and interview prep'
+            ]
+        },
+        'ui ux designer': {
+            'resources': ['Figma Community', 'Adobe Creative Cloud', 'UX Design Institute'],
+            'tips': 'Focus on wireframing, prototyping, user research, and design systems.',
+            'interview': 'Describe your design process. How do you handle user feedback?',
+            'roadmap': [
+                'Day 1: UI/UX fundamentals',
+                'Day 2: Wireframing and prototyping',
+                'Day 3: User research methods',
+                'Day 4: Design systems and accessibility',
+                'Day 5: Tools (Figma, Adobe XD)',
+                'Day 6: Build a sample design',
+                'Day 7: Portfolio review and interview prep'
+            ]
+        },
+        'video editor': {
+            'resources': ['Adobe Premiere Pro Tutorials', 'DaVinci Resolve Training', 'YouTube Creator Academy'],
+            'tips': 'Learn editing software, transitions, color grading, and storytelling.',
+            'interview': 'How do you approach editing for different audiences? Explain your workflow.',
+            'roadmap': [
+                'Day 1: Video editing basics',
+                'Day 2: Editing software setup',
+                'Day 3: Transitions and effects',
+                'Day 4: Color grading',
+                'Day 5: Audio editing',
+                'Day 6: Create a short video project',
+                'Day 7: Review and portfolio prep'
+            ]
+        },
+        # ...existing code...
     'python': {
         'resources': ['Python.org', 'Real Python', 'Automate the Boring Stuff'],
         'tips': 'Focus on data structures, lists, dictionaries, and list comprehensions.',
@@ -260,8 +339,130 @@ SKILL_DB = {
     'javascript': {
         'resources': ['MDN Web Docs', 'Javascript.info', 'Egghead.io'],
         'tips': 'Master ES6+ syntax, Promises, Async/Await, and the Event Loop.',
-        'interview': 'Explain closures and hoisting. What is the difference between let, const, and var?'
-    },
+        'interview': 'Explain closures and hoisting. What is the difference between let, const, and var?',
+            'roadmap': [
+                'Day 1: Python basics and syntax',
+                'Day 2: Data structures (lists, dicts, sets)',
+                'Day 3: Functions and OOP',
+                'Day 4: File handling and exceptions',
+                'Day 5: Libraries (requests, pandas)',
+                'Day 6: Mini project (automation)',
+                'Day 7: Review and practice interview questions'
+            ]
+        },
+        'java': {
+            'resources': ['Oracle Java Docs', 'Baeldung', 'Spring Academy'],
+            'tips': 'Understand OOP concepts: Inheritance, Encapsulation, Polymorphism.',
+            'interview': 'Difference between equals() and ==? What is the contract between hashCode and equals?',
+            'roadmap': [
+                'Day 1: Java syntax and setup',
+                'Day 2: OOP basics',
+                'Day 3: Collections and generics',
+                'Day 4: Exception handling',
+                'Day 5: Streams and lambdas',
+                'Day 6: Build a console app',
+                'Day 7: Mock interview and review'
+            ]
+        },
+        'javascript': {
+            'resources': ['MDN Web Docs', 'Javascript.info', 'Egghead.io'],
+            'tips': 'Master ES6+ syntax, Promises, Async/Await, and the Event Loop.',
+            'interview': 'Explain closures and hoisting. What is the difference between let, const, and var?',
+            'roadmap': [
+                'Day 1: JS basics and syntax',
+                'Day 2: Functions and scope',
+                'Day 3: DOM manipulation',
+                'Day 4: ES6 features',
+                'Day 5: Async programming',
+                'Day 6: Build a web page',
+                'Day 7: Review and interview prep'
+            ]
+        },
+        'react': {
+            'resources': ['React Official Docs', 'Kent C. Dodds Blog'],
+            'tips': 'Learn Hooks (useState, useEffect), Component lifecycle, and State Management.',
+            'interview': 'What is the Virtual DOM? Explain the useEffect dependency array.',
+            'roadmap': [
+                'Day 1: React basics and setup',
+                'Day 2: Components and props',
+                'Day 3: State and hooks',
+                'Day 4: Lifecycle and effects',
+                'Day 5: Routing and context',
+                'Day 6: Build a small app',
+                'Day 7: Review and interview prep'
+            ]
+        },
+        'sql': {
+            'resources': ['Mode SQL Tutorial', 'W3Schools SQL'],
+            'tips': 'Practice JOINS, GROUP BY, subqueries, and Window functions.',
+            'interview': 'Difference between INNER JOIN and LEFT JOIN? How to optimize a slow query?',
+            'roadmap': [
+                'Day 1: SQL basics and setup',
+                'Day 2: SELECT and WHERE',
+                'Day 3: JOINS and GROUP BY',
+                'Day 4: Subqueries',
+                'Day 5: Window functions',
+                'Day 6: Practice queries',
+                'Day 7: Review and interview prep'
+            ]
+        },
+        'docker': {
+            'resources': ['Docker Docs', 'Docker Mastery (Udemy)'],
+            'tips': 'Understand Images vs Containers, Dockerfile commands, and Docker Compose.',
+            'interview': 'What are different Docker networking drivers? How to minimize image size?',
+            'roadmap': [
+                'Day 1: Docker basics and installation',
+                'Day 2: Images and containers',
+                'Day 3: Dockerfile syntax',
+                'Day 4: Docker Compose',
+                'Day 5: Networking and volumes',
+                'Day 6: Build and run a project',
+                'Day 7: Review and interview prep'
+            ]
+        },
+        'kubernetes': {
+            'resources': ['Kubernetes.io', 'KubeAcademy'],
+            'tips': 'Learn Pods, Services, Deployments, and ConfigMaps.',
+            'interview': 'What is a Pod? Explain the difference between ReplicaSet and Deployment.',
+            'roadmap': [
+                'Day 1: K8s basics and setup',
+                'Day 2: Pods and deployments',
+                'Day 3: Services and networking',
+                'Day 4: ConfigMaps and secrets',
+                'Day 5: Scaling and monitoring',
+                'Day 6: Deploy a sample app',
+                'Day 7: Review and interview prep'
+            ]
+        },
+        'aws': {
+            'resources': ['AWS Documentation', 'A Cloud Guru'],
+            'tips': 'Focus on core services: EC2, S3, RDS, IAM, and Lambda.',
+            'interview': 'Difference between S3 and EBS? What is IAM Role vs User?',
+            'roadmap': [
+                'Day 1: AWS basics and account setup',
+                'Day 2: EC2 and compute',
+                'Day 3: S3 and storage',
+                'Day 4: RDS and databases',
+                'Day 5: IAM and security',
+                'Day 6: Deploy a sample app',
+                'Day 7: Review and interview prep'
+            ]
+        },
+        'machine learning': {
+            'resources': ['Fast.ai', 'Coursera Andrew Ng'],
+            'tips': 'Understand supervised vs unsupervised learning, overfitting/underfitting.',
+            'interview': 'Explain the Bias-Variance tradeoff. How do you handle imbalanced datasets?',
+            'roadmap': [
+                'Day 1: ML basics and terminology',
+                'Day 2: Supervised learning',
+                'Day 3: Unsupervised learning',
+                'Day 4: Model evaluation',
+                'Day 5: Overfitting/underfitting',
+                'Day 6: Build a simple model',
+                'Day 7: Review and interview prep'
+            ]
+        },
+        # ...existing code...
     'react': {
         'resources': ['React Official Docs', 'Kent C. Dodds Blog'],
         'tips': 'Learn Hooks (useState, useEffect), Component lifecycle, and State Management.',
