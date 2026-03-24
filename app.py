@@ -28,14 +28,24 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev_secret_key_change_me")
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
+
+# Vercel and serverless-friendly upload folder
+if os.environ.get('VERCEL') or os.environ.get('AWS_EXECUTION_ENV'):
+    app.config['UPLOAD_FOLDER'] = '/tmp'
+else:
+    app.config['UPLOAD_FOLDER'] = 'static/uploads'
+
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB limit
 
 # Initialize DB on start
-init_db()
+try:
+    init_db()
+except Exception as e:
+    print(f"Database initialization skipped or failed: {e}")
 
-# Ensure upload directory exists
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+# Ensure upload directory exists (only for local, /tmp always exists)
+if not (os.environ.get('VERCEL') or os.environ.get('AWS_EXECUTION_ENV')):
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 ALLOWED_EXTENSIONS = {'pdf', 'docx'}
 
