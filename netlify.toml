@@ -1,7 +1,7 @@
 [build]
   command = "pip install -r requirements.txt"
   functions = "netlify/functions"
-  publish = "public"
+  publish = "netlify_public"
 
 [dev]
   command = "python app.py"
@@ -12,6 +12,13 @@
   to = "/.netlify/functions/app"
   status = 200
   force = true
+
+[[redirects]]
+  from = "/"
+  to = "/.netlify/functions/app"
+  status = 200
+  force = true
+
 
 [functions]
   external_node_modules = []
