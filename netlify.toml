@@ -19,7 +19,5 @@
   status = 200
   force = true
 
-
 [functions]
-  runtime = "python"
-
+  node_bundler = "esbuild"
