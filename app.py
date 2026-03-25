@@ -29,8 +29,8 @@ from datetime import datetime
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev_secret_key_change_me")
 
-# Vercel and serverless-friendly upload folder
-if os.environ.get('VERCEL') or os.environ.get('AWS_EXECUTION_ENV'):
+# Vercel, Netlify and other serverless-friendly upload folder
+if os.environ.get('VERCEL') or os.environ.get('AWS_EXECUTION_ENV') or os.environ.get('NETLIFY'):
     app.config['UPLOAD_FOLDER'] = '/tmp'
 else:
     app.config['UPLOAD_FOLDER'] = 'static/uploads'
@@ -43,8 +43,8 @@ try:
 except Exception as e:
     print(f"Database initialization skipped or failed: {e}")
 
-# Ensure upload directory exists (only for local, /tmp always exists)
-if not (os.environ.get('VERCEL') or os.environ.get('AWS_EXECUTION_ENV')):
+# Ensure upload directory exists (only for local, /tmp always exists on serverless)
+if not (os.environ.get('VERCEL') or os.environ.get('AWS_EXECUTION_ENV') or os.environ.get('NETLIFY')):
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 ALLOWED_EXTENSIONS = {'pdf', 'docx'}
