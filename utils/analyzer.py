@@ -9,8 +9,14 @@ try:
 except ImportError:
     nlp = None
 
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+try:
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.metrics.pairwise import cosine_similarity
+    SKLEARN_AVAILABLE = True
+except ImportError:
+    SKLEARN_AVAILABLE = False
+    class TfidfVectorizer: pass
+    def cosine_similarity(a, b): return [[0]]
 import re
 from collections import Counter
 
@@ -32,11 +38,21 @@ def calculate_similarity(resume_text, jd_text):
     processed_resume = preprocess_text(resume_text)
     processed_jd = preprocess_text(jd_text)
     
-    vectorizer = TfidfVectorizer()
-    tfidf_matrix = vectorizer.fit_transform([processed_resume, processed_jd])
-    
-    similarity = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])
-    return round(similarity[0][0] * 100, 2)
+    if SKLEARN_AVAILABLE:
+        try:
+            vectorizer = TfidfVectorizer()
+            tfidf_matrix = vectorizer.fit_transform([processed_resume, processed_jd])
+            similarity = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])
+            return round(similarity[0][0] * 100, 2)
+        except Exception:
+            pass # Fallback to word-based if something fails
+            
+    # Lightweight Fallback: Word Overlap Similarity
+    res_words = set(tokenize(processed_resume))
+    jd_words = set(tokenize(processed_jd))
+    if not jd_words: return 0.0
+    common = res_words.intersection(jd_words)
+    return round((len(common) / len(jd_words)) * 100, 2)
 
 def calculate_score_breakdown(missing_skills, current_score):
     # Heuristic: Distribute the remaining potential score among missing skills
