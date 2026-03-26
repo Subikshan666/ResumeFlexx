@@ -2,9 +2,8 @@ import sys
 import os
 import traceback
 
-# Add the project root to the Python path
-# Netlify functions are executed in a directory where the root is three levels up from the script
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Netlify functions are executed in a directory where the root is two levels up from the script
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT_DIR)
 
 try:

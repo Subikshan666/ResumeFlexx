@@ -86,3 +86,6 @@ __pycache__/
 *.pdf
 instance/
 .env
+
+# Local Netlify folder
+.netlify
