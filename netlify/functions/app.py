@@ -2,8 +2,8 @@ import sys
 import os
 import traceback
 
-# Netlify functions are executed in a directory where the root is four levels up from the script
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+# Netlify functions are executed in a directory where the root is three levels up from the script
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, ROOT_DIR)
 
 try:
