@@ -1,6 +1,6 @@
 [build]
   command = ""
-  functions = "functions"
+  functions = "netlify/functions"
   publish = "netlify_public"
 
 [dev]
@@ -14,5 +14,5 @@
   force = true
 
 [functions]
-  node_bundler = "esbuild"
+  directory = "netlify/functions"
   included_files = ["app.py", "utils/**", "templates/**", "static/**", "resume_history.db"]
