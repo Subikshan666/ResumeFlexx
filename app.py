@@ -26,7 +26,10 @@ from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 from datetime import datetime
 
-app = Flask(__name__)
+app = Flask(__name__, 
+            static_url_path='/static',
+            static_folder='static', 
+            template_folder='templates')
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev_secret_key_change_me")
 
 # Vercel, Netlify and other serverless-friendly upload folder
