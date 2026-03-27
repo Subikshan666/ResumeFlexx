@@ -422,12 +422,13 @@ def generate_pdf_report(results):
 @app.route("/download-report/<int:analysis_id>")
 def download_report(analysis_id: int):
     """Generate and download a PDF report."""
-    with open('endpoint_calls.log', 'a') as f:
+    log_file = os.path.join(app.config['UPLOAD_FOLDER'], 'endpoint_calls.log')
+    with open(log_file, 'a') as f:
         f.write(f"[CALL] download_report({analysis_id})\n")
     
     try:
         results = get_analysis_by_id(analysis_id)
-        with open('endpoint_calls.log', 'a') as f:
+        with open(log_file, 'a') as f:
             f.write(f"[RESULTS] Found: {results is not None}\n")
         
         if not results:
@@ -435,7 +436,7 @@ def download_report(analysis_id: int):
             return redirect(url_for("history"))
 
         pdf_bytes = generate_pdf_report(results)
-        with open('endpoint_calls.log', 'a') as f:
+        with open(log_file, 'a') as f:
             f.write(f"[PDF] Generated {len(pdf_bytes)} bytes\n")
         
         return send_file(
@@ -447,7 +448,8 @@ def download_report(analysis_id: int):
     except Exception as e:
         import traceback
         error_msg = f"Error generating PDF: {str(e)}\nTraceback:\n{traceback.format_exc()}"
-        with open('pdf_error.log', 'a') as f:
+        error_log = os.path.join(app.config['UPLOAD_FOLDER'], 'pdf_error.log')
+        with open(error_log, 'a') as f:
             f.write(f"\n{datetime.now()}\n{error_msg}\n---\n")
         flash(f"Error generating PDF: {str(e)}")
         return redirect(url_for("history"))
